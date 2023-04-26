@@ -1,4 +1,4 @@
-![alt tag](https://github.com/jchristn/rosettastone/blob/master/assets/rosettastone.ico)
+![alt tag](https://raw.githubusercontent.com/jchristn/RosettaStone/main/assets/rosettastone.ico)
 
 # RosettaStone
 
