@@ -1,0 +1,175 @@
+{
+	"info": {
+		"_postman_id": "92a4cc46-9f11-4b22-8068-5a5ad59633d1",
+		"name": "Rosetta Stone",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "720438"
+	},
+	"item": [
+		{
+			"name": "Get all vendors",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/{{version}}/vendor",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"vendor"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all CODECs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/{{version}}/vendor",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"vendor"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find closest vendor match",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/{{version}}/vendor/match/ACTGACTGACTGACTGACTGACTGACTGTG",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"vendor",
+						"match",
+						"ACTGACTGACTGACTGACTGACTGACTGTG"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find closest CODEC match",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/{{version}}/codec/match/tagctagctagctagctagctagctagcta",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"codec",
+						"match",
+						"tagctagctagctagctagctagctagcta"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find closest vendor matches",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/{{version}}/vendor/matches/ACTGACTGACTGACTGACTGACTGACTGTG",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"vendor",
+						"matches",
+						"ACTGACTGACTGACTGACTGACTGACTGTG"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find closest CODEC matches",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/{{version}}/codec/matches/tagctagctagctagctagctagctagcta",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"codec",
+						"matches",
+						"tagctagctagctagctagctagctagcta"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "hostname",
+			"value": "localhost",
+			"type": "string"
+		},
+		{
+			"key": "version",
+			"value": "v1.0",
+			"type": "string"
+		},
+		{
+			"key": "port",
+			"value": "8000",
+			"type": "string"
+		}
+	]
+}
