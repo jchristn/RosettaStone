@@ -7,7 +7,6 @@ using ExpressionTree;
 using FindClosestString;
 using SyslogLogging;
 using Watson.ORM;
-using static Mysqlx.Expect.Open.Types.Condition.Types;
 
 namespace RosettaStone.Core.Services
 {
@@ -180,7 +179,9 @@ namespace RosettaStone.Core.Services
 
             (string, int) result = ClosestString.UsingLevenshtein(key, keys);
 
-            return GetByKey(result.Item1);
+            VendorMetadata vendor = GetByKey(result.Item1);
+            vendor.EditDistance = result.Item2;
+            return vendor;
         }
 
         public List<VendorMetadata> FindClosestMatches(string key, int maxResults = 10)

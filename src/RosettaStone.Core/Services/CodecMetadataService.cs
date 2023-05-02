@@ -212,7 +212,9 @@ namespace RosettaStone.Core.Services
 
             (string, int) result = ClosestString.UsingLevenshtein(key, keys);
 
-            return GetByKey(result.Item1);
+            CodecMetadata codec = GetByKey(result.Item1);
+            codec.EditDistance = result.Item2;
+            return codec;
         }
 
         public List<CodecMetadata> FindClosestMatches(string key, int maxResults = 10)

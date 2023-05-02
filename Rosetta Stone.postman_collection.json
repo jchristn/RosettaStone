@@ -27,12 +27,12 @@
 			"response": []
 		},
 		{
-			"name": "Get all CODECs",
+			"name": "Get vendor by key",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{hostname}}:{{port}}/{{version}}/vendor",
+					"raw": "http://{{hostname}}:{{port}}/{{version}}/vendor/ACTGACTGACTGACTGACTGACTGACTGAC",
 					"protocol": "http",
 					"host": [
 						"{{hostname}}"
@@ -40,7 +40,8 @@
 					"port": "{{port}}",
 					"path": [
 						"{{version}}",
-						"vendor"
+						"vendor",
+						"ACTGACTGACTGACTGACTGACTGACTGAC"
 					]
 				}
 			},
@@ -69,6 +70,75 @@
 			"response": []
 		},
 		{
+			"name": "Find closest vendor matches",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/{{version}}/vendor/matches/ACTGACTGACTGACTGACTGACTGACTGTG?results=2",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"vendor",
+						"matches",
+						"ACTGACTGACTGACTGACTGACTGACTGTG"
+					],
+					"query": [
+						{
+							"key": "results",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all CODECs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/{{version}}/codec",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"codec"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get CODEC by key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/{{version}}/codec/CAGTCAGTCAGTCAGTCAGTCAGTCAGTAC",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"codec",
+						"CAGTCAGTCAGTCAGTCAGTCAGTCAGTAC"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Find closest CODEC match",
 			"request": {
 				"method": "GET",
@@ -91,34 +161,12 @@
 			"response": []
 		},
 		{
-			"name": "Find closest vendor matches",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://{{hostname}}:{{port}}/{{version}}/vendor/matches/ACTGACTGACTGACTGACTGACTGACTGTG",
-					"protocol": "http",
-					"host": [
-						"{{hostname}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"{{version}}",
-						"vendor",
-						"matches",
-						"ACTGACTGACTGACTGACTGACTGACTGTG"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Find closest CODEC matches",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{hostname}}:{{port}}/{{version}}/codec/matches/tagctagctagctagctagctagctagcta",
+					"raw": "http://{{hostname}}:{{port}}/{{version}}/codec/matches/tagctagctagctagctagctagctagcta?results=2",
 					"protocol": "http",
 					"host": [
 						"{{hostname}}"
@@ -129,6 +177,12 @@
 						"codec",
 						"matches",
 						"tagctagctagctagctagctagctagcta"
+					],
+					"query": [
+						{
+							"key": "results",
+							"value": "2"
+						}
 					]
 				}
 			},

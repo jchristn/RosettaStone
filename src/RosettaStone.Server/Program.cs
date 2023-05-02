@@ -350,7 +350,7 @@ namespace RosettaStone.Server
                                         return;
                                     }
                                 }
-                                else if (ctx.Request.Url.Elements[2] == "codec")
+                                else if (ctx.Request.Url.Elements[1] == "codec")
                                 {
                                     // get CODEC by key
                                     codec = _Codecs.GetByKey(ctx.Request.Url.Elements[2]);
