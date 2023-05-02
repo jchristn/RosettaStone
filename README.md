@@ -18,15 +18,15 @@ GET /v1.0/vendor
 
 Success: 200/OK
 [
-	{
-	    "GUID": "[guid]",
-	    "Key": "[key]",
-	    "Name": "[name]",
-	    "ContactInformation": "[contact]",
-	    "CreatedUtc": "2023-04-26T19:16:28.382196",
-	    "LastModifiedUtc": "2023-04-26T19:16:28.382196"
-	},
-	...
+  {
+    "GUID": "[guid]",
+    "Key": "[key]",
+    "Name": "[name]",
+    "ContactInformation": "[contact]",
+    "CreatedUtc": "2023-04-26T19:16:28.382196",
+    "LastModifiedUtc": "2023-04-26T19:16:28.382196"
+  },
+  ...
 ]
 ```
 
@@ -36,17 +36,17 @@ GET /v1.0/vendor/[key]
 
 Success: 200/OK
 {
-    "GUID": "[guid]",
-    "Key": "[key]",
-    "Name": "[name]",
-    "ContactInformation": "[contact]",
-    "CreatedUtc": "2023-04-26T19:16:28.382196",
-    "LastModifiedUtc": "2023-04-26T19:16:28.382196"
+  "GUID": "[guid]",
+  "Key": "[key]",
+  "Name": "[name]",
+  "ContactInformation": "[contact]",
+  "CreatedUtc": "2023-04-26T19:16:28.382196",
+  "LastModifiedUtc": "2023-04-26T19:16:28.382196"
 }
 
 Failure: 404
 {
-    "Message": "The requested object was not found."
+  "Message": "The requested object was not found."
 }
 ```
 
@@ -56,13 +56,13 @@ GET /v1.0/vendor/match/[key]
 
 Success: 200/OK
 {
-    "GUID": "[guid]",
-    "Key": "[key]",
-    "Name": "[name]",
-    "ContactInformation": "[contact]",
-    "CreatedUtc": "2023-04-26T19:16:28.382196",
-    "LastModifiedUtc": "2023-04-26T19:16:28.382196",
-    "EditDistance": 2
+  "GUID": "[guid]",
+  "Key": "[key]",
+  "Name": "[name]",
+  "ContactInformation": "[contact]",
+  "CreatedUtc": "2023-04-26T19:16:28.382196",
+  "LastModifiedUtc": "2023-04-26T19:16:28.382196",
+  "EditDistance": 2
 }
 ```
 
@@ -72,16 +72,16 @@ GET /v1.0/vendor/match/[key]?results=10
 
 Success: 200/OK
 [
-	{
-	    "GUID": "[guid]",
-	    "Key": "[key]",
-	    "Name": "[name]",
-	    "ContactInformation": "[contact]",
-	    "CreatedUtc": "2023-04-26T19:16:28.382196",
-	    "LastModifiedUtc": "2023-04-26T19:16:28.382196",
-	    "EditDistance": 2
-	},
-	...
+  {
+    "GUID": "[guid]",
+    "Key": "[key]",
+    "Name": "[name]",
+    "ContactInformation": "[contact]",
+    "CreatedUtc": "2023-04-26T19:16:28.382196",
+    "LastModifiedUtc": "2023-04-26T19:16:28.382196",
+    "EditDistance": 2
+  },
+  ...
 ]
 ```
 
@@ -90,19 +90,7 @@ Success: 200/OK
 GET /v1.0/codec
 
 Success: 200/OK
-[
-	{
-	    "GUID": "[guid]",
-	    "VendorGUID": "[vendorguid]",
-	    "Key": "[key]",
-	    "Name": "[name]",
-	    "Version": "[version]",
-	    "Uri": "[uri]",
-	    "CreatedUtc": "2023-04-26T19:16:28.465277",
-	    "LastModifiedUtc": "2023-04-26T19:16:28.465277"
-	},
-	...
-]
+
 ```
 
 ### Get CODEC by Key
@@ -110,7 +98,8 @@ Success: 200/OK
 GET /v1.0/codec/[key]
 
 Success: 200/OK
-{
+[
+  {
     "GUID": "[guid]",
     "VendorGUID": "[vendorguid]",
     "Key": "[key]",
@@ -119,11 +108,13 @@ Success: 200/OK
     "Uri": "[uri]",
     "CreatedUtc": "2023-04-26T19:16:28.465277",
     "LastModifiedUtc": "2023-04-26T19:16:28.465277"
-}
+  },
+  ...
+]
 
 Failure: 404
 {
-    "Message": "The requested object was not found."
+  "Message": "The requested object was not found."
 }
 ```
 
@@ -132,16 +123,16 @@ Failure: 404
 GET /v1.0/codec/match/[key]
 
 Success: 200/OK
-{    
-	"GUID": "[guid]",
-    "VendorGUID": "[vendorguid]",
-    "Key": "[key]",
-    "Name": "[name]",
-    "Version": "[version]",
-    "Uri": "[uri]",
-    "CreatedUtc": "2023-04-26T19:16:28.465277",
-    "LastModifiedUtc": "2023-04-26T19:16:28.465277"
-    "EditDistance": 2
+{
+  "GUID": "[guid]",
+  "VendorGUID": "[vendorguid]",
+  "Key": "[key]",
+  "Name": "[name]",
+  "Version": "[version]",
+  "Uri": "[uri]",
+  "CreatedUtc": "2023-04-26T19:16:28.465277",
+  "LastModifiedUtc": "2023-04-26T19:16:28.465277",
+  "EditDistance": 2
 }
 ```
 
@@ -151,18 +142,18 @@ GET /v1.0/codec/match/[key]?results=10
 
 Success: 200/OK
 [
-	{
-		"GUID": "[guid]",
-	    "VendorGUID": "[vendorguid]",
-	    "Key": "[key]",
-	    "Name": "[name]",
-	    "Version": "[version]",
-	    "Uri": "[uri]",
-	    "CreatedUtc": "2023-04-26T19:16:28.465277",
-	    "LastModifiedUtc": "2023-04-26T19:16:28.465277"
-	    "EditDistance": 2
-	},
-	...
+  {
+    "GUID": "[guid]",
+    "VendorGUID": "[vendorguid]",
+    "Key": "[key]",
+    "Name": "[name]",
+    "Version": "[version]",
+    "Uri": "[uri]",
+    "CreatedUtc": "2023-04-26T19:16:28.465277",
+    "LastModifiedUtc": "2023-04-26T19:16:28.465277",
+    "EditDistance": 2
+  },
+  ...
 ]
 ```
 
