@@ -20,6 +20,7 @@ namespace RosettaStone.Core
 
         private ExceptionConverter<Exception> _ExceptionConverter = new ExceptionConverter<Exception>();
         private NameValueCollectionConverter _NameValueCollectionConverter = new NameValueCollectionConverter();
+        private JsonStringEnumConverter _JsonStringEnumConverter = new JsonStringEnumConverter();
 
         #endregion
 
@@ -45,7 +46,12 @@ namespace RosettaStone.Core
         /// <returns>Instance.</returns>
         public T DeserializeJson<T>(string json)
         {
-            return JsonSerializer.Deserialize<T>(json);
+            JsonSerializerOptions options = new JsonSerializerOptions();
+            options.Converters.Add(_ExceptionConverter);
+            options.Converters.Add(_NameValueCollectionConverter);
+            options.Converters.Add(_JsonStringEnumConverter);
+
+            return JsonSerializer.Deserialize<T>(json, options);
         }
 
         /// <summary>
@@ -64,6 +70,7 @@ namespace RosettaStone.Core
             // see https://github.com/dotnet/runtime/issues/43026
             options.Converters.Add(_ExceptionConverter);
             options.Converters.Add(_NameValueCollectionConverter);
+            options.Converters.Add(_JsonStringEnumConverter);
 
             if (!pretty)
             {
