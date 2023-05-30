@@ -14,6 +14,7 @@ using SyslogLogging;
 using Timestamps;
 using Watson.ORM;
 using WatsonWebserver;
+using static Mysqlx.Expect.Open.Types.Condition.Types;
 
 namespace RosettaStone.Server
 {
@@ -419,6 +420,81 @@ namespace RosettaStone.Server
                                         ctx.Response.StatusCode = 200;
                                         ctx.Response.ContentType = "application/json";
                                         await ctx.Response.Send(_Serializer.SerializeJson(codecs, true));
+                                        return;
+                                    }
+                                }
+                                else if (ctx.Request.Url.Elements[1] == "full")
+                                {
+                                    if (ctx.Request.Url.Elements[2] == "match")
+                                    {
+                                        string key = ctx.Request.Url.Elements[3];
+                                        if (key.Length < 36)
+                                        {
+                                            _Logging.Warn(_Header + "supplied key is 35 characters or less");
+                                            ret = new Dictionary<string, object>
+                                            {
+                                                { "Message", Constants.BadRequestError },
+                                                { "Context", "Supplied key must be greater than 35 characters." }
+                                            };
+
+                                            ctx.Response.StatusCode = 404;
+                                            ctx.Response.ContentType = "application/json";
+                                            await ctx.Response.Send(_Serializer.SerializeJson(ret, true));
+                                            return;
+                                        }
+
+                                        // left 35, right 35
+                                        string left = key.Substring(0, 35);
+                                        string right = key.Substring((key.Length - 35), 35);
+
+                                        ResultSet resultSet = new ResultSet
+                                        {
+                                            Key = key,
+                                            Left = left,
+                                            Right = right,
+                                            Vendor = _Vendors.FindClosestMatch(left),
+                                            Codec = _Codecs.FindClosestMatch(right)
+                                        };
+
+                                        ctx.Response.StatusCode = 200;
+                                        ctx.Response.ContentType = "application/json";
+                                        await ctx.Response.Send(_Serializer.SerializeJson(resultSet, true));
+                                        return;
+                                    }
+                                    else if (ctx.Request.Url.Elements[2] == "matches")
+                                    {
+                                        string key = ctx.Request.Url.Elements[3];
+                                        if (key.Length < 36)
+                                        {
+                                            _Logging.Warn(_Header + "supplied key is 35 characters or less");
+                                            ret = new Dictionary<string, object>
+                                            {
+                                                { "Message", Constants.BadRequestError },
+                                                { "Context", "Supplied key must be greater than 35 characters." }
+                                            };
+
+                                            ctx.Response.StatusCode = 404;
+                                            ctx.Response.ContentType = "application/json";
+                                            await ctx.Response.Send(_Serializer.SerializeJson(ret, true));
+                                            return;
+                                        }
+
+                                        // left 35, right 35
+                                        string left = key.Substring(0, 35);
+                                        string right = key.Substring((key.Length - 35), 35);
+
+                                        ResultSet resultSet = new ResultSet
+                                        {
+                                            Key = key,
+                                            Left = left,
+                                            Right = right,
+                                            Vendors = _Vendors.FindClosestMatches(left, maxResults),
+                                            Codecs = _Codecs.FindClosestMatches(right, maxResults)
+                                        };
+
+                                        ctx.Response.StatusCode = 200;
+                                        ctx.Response.ContentType = "application/json";
+                                        await ctx.Response.Send(_Serializer.SerializeJson(resultSet, true));
                                         return;
                                     }
                                 }

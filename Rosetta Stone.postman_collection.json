@@ -187,6 +187,50 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Find closest match by full key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/{{version}}/full/match/ACTGACTGACTGACTGACTGACTGACTGAAACTAGCTAGCTAGCTAGCTAGCTAGCTAGCCC",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"full",
+						"match",
+						"ACTGACTGACTGACTGACTGACTGACTGAAACTAGCTAGCTAGCTAGCTAGCTAGCTAGCCC"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find closest matches by full key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/{{version}}/full/match/ACTGACTGACTGACTGACTGACTGACTGAAACTAGCTAGCTAGCTAGCTAGCTAGCTAGCCC",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"full",
+						"match",
+						"ACTGACTGACTGACTGACTGACTGACTGAAACTAGCTAGCTAGCTAGCTAGCTAGCTAGCCC"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
