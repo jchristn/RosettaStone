@@ -294,12 +294,30 @@ namespace RosettaStone.Server
 
             #endregion
 
+            ctx.Response.ContentType = Constants.JsonContentType;
+
             try
             {
                 switch (ctx.Request.Method)
                 {
                     case HttpMethod.GET:
-                        if (ctx.Request.Url.Elements.Length == 2)
+                        if (ctx.Request.Url.Elements.Length == 0)
+                        {
+                            ctx.Response.StatusCode = 200;
+                            ctx.Response.ContentType = Constants.HtmlContentType;
+                            await ctx.Response.Send(Constants.RootHtml);
+                            return;
+                        }
+                        else if (ctx.Request.Url.Elements.Length == 1)
+                        {
+                            if (ctx.Request.Url.Elements[0].ToLower().Equals("favicon.ico"))
+                            {
+                                ctx.Response.StatusCode = 200;
+                                await ctx.Response.Send();
+                                return;
+                            }
+                        }
+                        else if (ctx.Request.Url.Elements.Length == 2)
                         {
                             if (ctx.Request.Url.Elements[0] == "v1.0")
                             {
@@ -308,7 +326,6 @@ namespace RosettaStone.Server
                                     // get all vendors
                                     vendors = _Vendors.All();
                                     ctx.Response.StatusCode = 200;
-                                    ctx.Response.ContentType = "application/json";
                                     await ctx.Response.Send(_Serializer.SerializeJson(vendors, true));
                                     return;
                                 }
@@ -317,7 +334,6 @@ namespace RosettaStone.Server
                                     // get all CODECs
                                     codecs = _Codecs.All();
                                     ctx.Response.StatusCode = 200;
-                                    ctx.Response.ContentType = "application/json";
                                     await ctx.Response.Send(_Serializer.SerializeJson(codecs, true));
                                     return;
                                 }
@@ -339,14 +355,12 @@ namespace RosettaStone.Server
                                         };
 
                                         ctx.Response.StatusCode = 404;
-                                        ctx.Response.ContentType = "application/json";
                                         await ctx.Response.Send(_Serializer.SerializeJson(ret, true));
                                         return;
                                     }
                                     else
                                     {
                                         ctx.Response.StatusCode = 200;
-                                        ctx.Response.ContentType = "application/json";
                                         await ctx.Response.Send(_Serializer.SerializeJson(vendor, true));
                                         return;
                                     }
@@ -363,14 +377,12 @@ namespace RosettaStone.Server
                                         };
 
                                         ctx.Response.StatusCode = 404;
-                                        ctx.Response.ContentType = "application/json";
                                         await ctx.Response.Send(_Serializer.SerializeJson(ret, true));
                                         return;
                                     }
                                     else
                                     {
                                         ctx.Response.StatusCode = 200;
-                                        ctx.Response.ContentType = "application/json";
                                         await ctx.Response.Send(_Serializer.SerializeJson(codec, true));
                                         return;
                                     }
@@ -388,7 +400,6 @@ namespace RosettaStone.Server
                                         // get closest vendor match by key
                                         vendor = _Vendors.FindClosestMatch(ctx.Request.Url.Elements[3]);
                                         ctx.Response.StatusCode = 200;
-                                        ctx.Response.ContentType = "application/json";
                                         await ctx.Response.Send(_Serializer.SerializeJson(vendor, true));
                                         return;
                                     }
@@ -397,7 +408,6 @@ namespace RosettaStone.Server
                                         // get closest vendor matches by key
                                         vendors = _Vendors.FindClosestMatches(ctx.Request.Url.Elements[3], maxResults);
                                         ctx.Response.StatusCode = 200;
-                                        ctx.Response.ContentType = "application/json";
                                         await ctx.Response.Send(_Serializer.SerializeJson(vendors, true));
                                         return;
                                     }
@@ -409,7 +419,6 @@ namespace RosettaStone.Server
                                         // get closest CODEC match by key
                                         codec = _Codecs.FindClosestMatch(ctx.Request.Url.Elements[3]);
                                         ctx.Response.StatusCode = 200;
-                                        ctx.Response.ContentType = "application/json";
                                         await ctx.Response.Send(_Serializer.SerializeJson(codec, true));
                                         return;
                                     }
@@ -418,7 +427,6 @@ namespace RosettaStone.Server
                                         // get closest CODEC matches by key
                                         codecs = _Codecs.FindClosestMatches(ctx.Request.Url.Elements[3], maxResults);
                                         ctx.Response.StatusCode = 200;
-                                        ctx.Response.ContentType = "application/json";
                                         await ctx.Response.Send(_Serializer.SerializeJson(codecs, true));
                                         return;
                                     }
@@ -438,7 +446,6 @@ namespace RosettaStone.Server
                                             };
 
                                             ctx.Response.StatusCode = 404;
-                                            ctx.Response.ContentType = "application/json";
                                             await ctx.Response.Send(_Serializer.SerializeJson(ret, true));
                                             return;
                                         }
@@ -457,7 +464,6 @@ namespace RosettaStone.Server
                                         };
 
                                         ctx.Response.StatusCode = 200;
-                                        ctx.Response.ContentType = "application/json";
                                         await ctx.Response.Send(_Serializer.SerializeJson(resultSet, true));
                                         return;
                                     }
@@ -474,7 +480,6 @@ namespace RosettaStone.Server
                                             };
 
                                             ctx.Response.StatusCode = 404;
-                                            ctx.Response.ContentType = "application/json";
                                             await ctx.Response.Send(_Serializer.SerializeJson(ret, true));
                                             return;
                                         }
@@ -493,7 +498,6 @@ namespace RosettaStone.Server
                                         };
 
                                         ctx.Response.StatusCode = 200;
-                                        ctx.Response.ContentType = "application/json";
                                         await ctx.Response.Send(_Serializer.SerializeJson(resultSet, true));
                                         return;
                                     }
@@ -509,7 +513,6 @@ namespace RosettaStone.Server
                 };
 
                 ctx.Response.StatusCode = 400;
-                ctx.Response.ContentType = "application/json";
                 await ctx.Response.Send(_Serializer.SerializeJson(ret, true));
             }
             catch (Exception e)
@@ -523,7 +526,6 @@ namespace RosettaStone.Server
                 };
 
                 ctx.Response.StatusCode = 500;
-                ctx.Response.ContentType = "application/json";
                 await ctx.Response.Send(_Serializer.SerializeJson(ret, true));
             }
             finally
