@@ -283,8 +283,6 @@ namespace RosettaStone.Server
             List<CodecMetadata> codecs = null;
             List<VendorMetadata> vendors = null;
             
-            Dictionary<string, object> ret = null;
-
             int maxResults = 10;
 
             string maxResultsStr = ctx.Request.Query.Elements.Get("results");
@@ -349,13 +347,14 @@ namespace RosettaStone.Server
                                     vendor = _Vendors.GetByKey(ctx.Request.Url.Elements[2]);
                                     if (vendor == null)
                                     {
-                                        ret = new Dictionary<string, object>
-                                        {
-                                            { "Message", Constants.NotFoundError }
-                                        };
-
                                         ctx.Response.StatusCode = 404;
-                                        await ctx.Response.Send(_Serializer.SerializeJson(ret, true));
+                                        await ctx.Response.Send(_Serializer.SerializeJson(
+                                            new ApiErrorResponse()
+                                            {
+                                                Message = Constants.NotFoundError,
+                                                StatusCode = 404,
+                                                Context = null
+                                            }, true));
                                         return;
                                     }
                                     else
@@ -371,13 +370,14 @@ namespace RosettaStone.Server
                                     codec = _Codecs.GetByKey(ctx.Request.Url.Elements[2]);
                                     if (codec == null)
                                     {
-                                        ret = new Dictionary<string, object>
-                                        {
-                                            { "Message", Constants.NotFoundError }
-                                        };
-
                                         ctx.Response.StatusCode = 404;
-                                        await ctx.Response.Send(_Serializer.SerializeJson(ret, true));
+                                        await ctx.Response.Send(_Serializer.SerializeJson(
+                                            new ApiErrorResponse()
+                                            {
+                                                Message = Constants.NotFoundError,
+                                                StatusCode = 404,
+                                                Context = null
+                                            }, true));
                                         return;
                                     }
                                     else
@@ -439,14 +439,15 @@ namespace RosettaStone.Server
                                         if (key.Length < 36)
                                         {
                                             _Logging.Warn(_Header + "supplied key is 35 characters or less");
-                                            ret = new Dictionary<string, object>
-                                            {
-                                                { "Message", Constants.BadRequestError },
-                                                { "Context", "Supplied key must be greater than 35 characters." }
-                                            };
 
-                                            ctx.Response.StatusCode = 404;
-                                            await ctx.Response.Send(_Serializer.SerializeJson(ret, true));
+                                            ctx.Response.StatusCode = 404; 
+                                            await ctx.Response.Send(_Serializer.SerializeJson(
+                                                new ApiErrorResponse()
+                                                {
+                                                    Message = Constants.BadRequestError,
+                                                    StatusCode = 404,
+                                                    Context = "Supplied key must be greater than 35 characters."
+                                                }, true));
                                             return;
                                         }
 
@@ -473,14 +474,15 @@ namespace RosettaStone.Server
                                         if (key.Length < 36)
                                         {
                                             _Logging.Warn(_Header + "supplied key is 35 characters or less");
-                                            ret = new Dictionary<string, object>
-                                            {
-                                                { "Message", Constants.BadRequestError },
-                                                { "Context", "Supplied key must be greater than 35 characters." }
-                                            };
 
-                                            ctx.Response.StatusCode = 404;
-                                            await ctx.Response.Send(_Serializer.SerializeJson(ret, true));
+                                            ctx.Response.StatusCode = 404; 
+                                            await ctx.Response.Send(_Serializer.SerializeJson(
+                                                new ApiErrorResponse()
+                                                {
+                                                    Message = Constants.BadRequestError,
+                                                    StatusCode = 404,
+                                                    Context = "Supplied key must be greater than 35 characters."
+                                                }, true));
                                             return;
                                         }
 
@@ -507,26 +509,27 @@ namespace RosettaStone.Server
                         break;
                 }
 
-                ret = new Dictionary<string, object>
-                {
-                    { "Message", Constants.BadRequestError }
-                };
-
-                ctx.Response.StatusCode = 400;
-                await ctx.Response.Send(_Serializer.SerializeJson(ret, true));
+                ctx.Response.StatusCode = 400; 
+                await ctx.Response.Send(_Serializer.SerializeJson(
+                    new ApiErrorResponse()
+                    {
+                        Message = Constants.BadRequestError,
+                        StatusCode = 400,
+                        Context = "Unknown URL or HTTP method."
+                    }, true));
             }
             catch (Exception e)
             {
                 _Logging.Exception(e);
 
-                ret = new Dictionary<string, object>
-                {
-                    { "Message", Constants.InternalServerError },
-                    { "Exception", e }
-                };
-
                 ctx.Response.StatusCode = 500;
-                await ctx.Response.Send(_Serializer.SerializeJson(ret, true));
+                await ctx.Response.Send(_Serializer.SerializeJson(
+                    new ApiErrorResponse()
+                    {
+                        Message = Constants.InternalServerError,
+                        StatusCode = 500,
+                        Exception = e
+                    }, true));
             }
             finally
             {
