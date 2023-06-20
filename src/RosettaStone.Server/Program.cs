@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using FindClosestString;
 using GetSomeInput;
 using RosettaStone.Core;
 using RosettaStone.Core.Services;
 using SyslogLogging;
-using Timestamps;
 using Watson.ORM;
 using WatsonWebserver;
-using static Mysqlx.Expect.Open.Types.Condition.Types;
 
 namespace RosettaStone.Server
 {
@@ -233,6 +228,20 @@ namespace RosettaStone.Server
                 _Settings.Webserver.Ssl,
                 DefaultRoute);
 
+            _Server.Routes.Static.Add(HttpMethod.GET, "/", GetRootRoute);
+            _Server.Routes.Static.Add(HttpMethod.GET, "/favicon.ico", GetFaviconRoute);
+            _Server.Routes.Static.Add(HttpMethod.GET, "/v1.0/vendor", GetAllVendorsV1);
+            _Server.Routes.Static.Add(HttpMethod.GET, "/v1.0/codec", GetAllCodecsV1);
+
+            _Server.Routes.Parameter.Add(HttpMethod.GET, "/v1.0/vendor/{key}", GetVendorByKeyV1);
+            _Server.Routes.Parameter.Add(HttpMethod.GET, "/v1.0/codec/{key}", GetCodecByKeyV1);
+            _Server.Routes.Parameter.Add(HttpMethod.GET, "/v1.0/vendor/match/{key}", GetVendorMatchV1);
+            _Server.Routes.Parameter.Add(HttpMethod.GET, "/v1.0/codec/match/{key}", GetCodecMatchV1);
+            _Server.Routes.Parameter.Add(HttpMethod.GET, "/v1.0/vendor/matches/{key}", GetVendorMatchesV1);
+            _Server.Routes.Parameter.Add(HttpMethod.GET, "/v1.0/codec/matches/{key}", GetCodecMatchesV1);
+            _Server.Routes.Parameter.Add(HttpMethod.GET, "/v1.0/full/match/{key}", GetFullMatchV1);
+            _Server.Routes.Parameter.Add(HttpMethod.GET, "/v1.0/full/matches/{key}", GetCodecMatchesV1);
+
             _Server.Start();
 
             Console.WriteLine("Webserver started on " +
@@ -274,15 +283,200 @@ namespace RosettaStone.Server
 
         private static async Task DefaultRoute(HttpContext ctx)
         {
-            Timestamp ts = new Timestamp();
+            ctx.Response.StatusCode = 400; 
+            await ctx.Response.Send(_Serializer.SerializeJson(
+                new ApiErrorResponse()
+                {
+                    Message = Constants.BadRequestError,
+                    StatusCode = 400,
+                    Context = "Unknown URL or HTTP method."
+                }, true));
+        }
 
-            #region Variables-and-Query-Values
+        private static async Task GetRootRoute(HttpContext ctx)
+        {
+            ctx.Response.StatusCode = 200;
+            ctx.Response.ContentType = Constants.HtmlContentType;
+            await ctx.Response.Send(Constants.RootHtml);
+            return;
+        }
 
-            CodecMetadata codec = null;
-            VendorMetadata vendor = null;
-            List<CodecMetadata> codecs = null;
-            List<VendorMetadata> vendors = null;
-            
+        private static async Task GetFaviconRoute(HttpContext ctx)
+        {
+            ctx.Response.StatusCode = 200;
+            await ctx.Response.Send();
+            return;
+        }
+
+        private static async Task GetAllVendorsV1(HttpContext ctx)
+        {
+            List<VendorMetadata> vendors = _Vendors.All();
+            ctx.Response.StatusCode = 200;
+            await ctx.Response.Send(_Serializer.SerializeJson(vendors, true));
+            return;
+        }
+
+        private static async Task GetAllCodecsV1(HttpContext ctx)
+        {
+            List<CodecMetadata> codecs = _Codecs.All();
+            ctx.Response.StatusCode = 200;
+            await ctx.Response.Send(_Serializer.SerializeJson(codecs, true));
+            return;
+        }
+
+        private static async Task GetVendorByKeyV1(HttpContext ctx)
+        {
+            VendorMetadata vendor = _Vendors.GetByKey(ctx.Request.Url.Parameters["key"]);
+            if (vendor == null)
+            {
+                ctx.Response.StatusCode = 404;
+                await ctx.Response.Send(_Serializer.SerializeJson(
+                    new ApiErrorResponse()
+                    {
+                        Message = Constants.NotFoundError,
+                        StatusCode = 404,
+                        Context = null
+                    }, true));
+                return;
+            }
+            else
+            {
+                ctx.Response.StatusCode = 200;
+                await ctx.Response.Send(_Serializer.SerializeJson(vendor, true));
+                return;
+            }
+        }
+
+        private static async Task GetCodecByKeyV1(HttpContext ctx)
+        {
+            CodecMetadata codec = _Codecs.GetByKey(ctx.Request.Url.Parameters["key"]);
+            if (codec == null)
+            {
+                ctx.Response.StatusCode = 404;
+                await ctx.Response.Send(_Serializer.SerializeJson(
+                    new ApiErrorResponse()
+                    {
+                        Message = Constants.NotFoundError,
+                        StatusCode = 404,
+                        Context = null
+                    }, true));
+                return;
+            }
+            else
+            {
+                ctx.Response.StatusCode = 200;
+                await ctx.Response.Send(_Serializer.SerializeJson(codec, true));
+                return;
+            }
+        }
+        
+        private static async Task GetVendorMatchV1(HttpContext ctx)
+        {
+            VendorMetadata vendor = _Vendors.FindClosestMatch(ctx.Request.Url.Parameters["key"]);
+            ctx.Response.StatusCode = 200;
+            await ctx.Response.Send(_Serializer.SerializeJson(vendor, true));
+            return;
+        }
+        
+        private static async Task GetCodecMatchV1(HttpContext ctx)
+        {
+            CodecMetadata codec = _Codecs.FindClosestMatch(ctx.Request.Url.Parameters["key"]);
+            ctx.Response.StatusCode = 200;
+            await ctx.Response.Send(_Serializer.SerializeJson(codec, true));
+            return;
+        }
+
+        private static async Task GetVendorMatchesV1(HttpContext ctx)
+        {
+            List<VendorMetadata> vendors = _Vendors.FindClosestMatches(ctx.Request.Url.Parameters["key"], GetMaxResults(ctx));
+            ctx.Response.StatusCode = 200;
+            await ctx.Response.Send(_Serializer.SerializeJson(vendors, true));
+            return;
+        }
+
+        private static async Task GetCodecMatchesV1(HttpContext ctx)
+        {
+            List<CodecMetadata> codecs = _Codecs.FindClosestMatches(ctx.Request.Url.Parameters["key"], GetMaxResults(ctx));
+            ctx.Response.StatusCode = 200;
+            await ctx.Response.Send(_Serializer.SerializeJson(codecs, true));
+            return;
+        }
+
+        private static async Task GetFullMatchV1(HttpContext ctx)
+        {
+            string key = ctx.Request.Url.Parameters["key"];
+            if (key.Length < 36)
+            {
+                _Logging.Warn(_Header + "supplied key is 35 characters or less");
+
+                ctx.Response.StatusCode = 404;
+                await ctx.Response.Send(_Serializer.SerializeJson(
+                    new ApiErrorResponse()
+                    {
+                        Message = Constants.BadRequestError,
+                        StatusCode = 404,
+                        Context = "Supplied key must be greater than 35 characters."
+                    }, true));
+                return;
+            }
+
+            // left 35, right 35
+            string left = key.Substring(0, 35);
+            string right = key.Substring((key.Length - 35), 35);
+
+            ResultSet resultSet = new ResultSet
+            {
+                Key = key,
+                Left = left,
+                Right = right,
+                Vendor = _Vendors.FindClosestMatch(left),
+                Codec = _Codecs.FindClosestMatch(right)
+            };
+
+            ctx.Response.StatusCode = 200;
+            await ctx.Response.Send(_Serializer.SerializeJson(resultSet, true));
+            return;
+        }
+
+        private static async Task GetFullMatchesV1(HttpContext ctx)
+        {
+            string key = ctx.Request.Url.Parameters["key"];
+            if (key.Length < 36)
+            {
+                _Logging.Warn(_Header + "supplied key is 35 characters or less");
+
+                ctx.Response.StatusCode = 404;
+                await ctx.Response.Send(_Serializer.SerializeJson(
+                    new ApiErrorResponse()
+                    {
+                        Message = Constants.BadRequestError,
+                        StatusCode = 404,
+                        Context = "Supplied key must be greater than 35 characters."
+                    }, true));
+                return;
+            }
+
+            // left 35, right 35
+            string left = key.Substring(0, 35);
+            string right = key.Substring((key.Length - 35), 35);
+            int maxResults = GetMaxResults(ctx);
+
+            ResultSet resultSet = new ResultSet
+            {
+                Key = key,
+                Left = left,
+                Right = right,
+                Vendors = _Vendors.FindClosestMatches(left, maxResults),
+                Codecs = _Codecs.FindClosestMatches(right, maxResults)
+            };
+
+            ctx.Response.StatusCode = 200;
+            await ctx.Response.Send(_Serializer.SerializeJson(resultSet, true));
+            return;
+        }
+
+        private static int GetMaxResults(HttpContext ctx)
+        {
             int maxResults = 10;
 
             string maxResultsStr = ctx.Request.Query.Elements.Get("results");
@@ -290,258 +484,8 @@ namespace RosettaStone.Server
             if (!String.IsNullOrEmpty(maxResultsStr))
                 maxResults = Convert.ToInt32(maxResultsStr);
 
-            #endregion
-
-            ctx.Response.ContentType = Constants.JsonContentType;
-
-            try
-            {
-                switch (ctx.Request.Method)
-                {
-                    case HttpMethod.GET:
-                        if (ctx.Request.Url.Elements.Length == 0)
-                        {
-                            ctx.Response.StatusCode = 200;
-                            ctx.Response.ContentType = Constants.HtmlContentType;
-                            await ctx.Response.Send(Constants.RootHtml);
-                            return;
-                        }
-                        else if (ctx.Request.Url.Elements.Length == 1)
-                        {
-                            if (ctx.Request.Url.Elements[0].ToLower().Equals("favicon.ico"))
-                            {
-                                ctx.Response.StatusCode = 200;
-                                await ctx.Response.Send();
-                                return;
-                            }
-                        }
-                        else if (ctx.Request.Url.Elements.Length == 2)
-                        {
-                            if (ctx.Request.Url.Elements[0] == "v1.0")
-                            {
-                                if (ctx.Request.Url.Elements[1] == "vendor")
-                                {
-                                    // get all vendors
-                                    vendors = _Vendors.All();
-                                    ctx.Response.StatusCode = 200;
-                                    await ctx.Response.Send(_Serializer.SerializeJson(vendors, true));
-                                    return;
-                                }
-                                else if (ctx.Request.Url.Elements[1] == "codec")
-                                {
-                                    // get all CODECs
-                                    codecs = _Codecs.All();
-                                    ctx.Response.StatusCode = 200;
-                                    await ctx.Response.Send(_Serializer.SerializeJson(codecs, true));
-                                    return;
-                                }
-                            }
-                        }
-                        else if (ctx.Request.Url.Elements.Length == 3)
-                        {
-                            if (ctx.Request.Url.Elements[0] == "v1.0")
-                            {
-                                if (ctx.Request.Url.Elements[1] == "vendor")
-                                {
-                                    // get vendor by key
-                                    vendor = _Vendors.GetByKey(ctx.Request.Url.Elements[2]);
-                                    if (vendor == null)
-                                    {
-                                        ctx.Response.StatusCode = 404;
-                                        await ctx.Response.Send(_Serializer.SerializeJson(
-                                            new ApiErrorResponse()
-                                            {
-                                                Message = Constants.NotFoundError,
-                                                StatusCode = 404,
-                                                Context = null
-                                            }, true));
-                                        return;
-                                    }
-                                    else
-                                    {
-                                        ctx.Response.StatusCode = 200;
-                                        await ctx.Response.Send(_Serializer.SerializeJson(vendor, true));
-                                        return;
-                                    }
-                                }
-                                else if (ctx.Request.Url.Elements[1] == "codec")
-                                {
-                                    // get CODEC by key
-                                    codec = _Codecs.GetByKey(ctx.Request.Url.Elements[2]);
-                                    if (codec == null)
-                                    {
-                                        ctx.Response.StatusCode = 404;
-                                        await ctx.Response.Send(_Serializer.SerializeJson(
-                                            new ApiErrorResponse()
-                                            {
-                                                Message = Constants.NotFoundError,
-                                                StatusCode = 404,
-                                                Context = null
-                                            }, true));
-                                        return;
-                                    }
-                                    else
-                                    {
-                                        ctx.Response.StatusCode = 200;
-                                        await ctx.Response.Send(_Serializer.SerializeJson(codec, true));
-                                        return;
-                                    }
-                                }
-                            }
-                        }
-                        else if (ctx.Request.Url.Elements.Length == 4)
-                        {
-                            if (ctx.Request.Url.Elements[0] == "v1.0")
-                            {
-                                if (ctx.Request.Url.Elements[1] == "vendor")
-                                {
-                                    if (ctx.Request.Url.Elements[2] == "match")
-                                    {
-                                        // get closest vendor match by key
-                                        vendor = _Vendors.FindClosestMatch(ctx.Request.Url.Elements[3]);
-                                        ctx.Response.StatusCode = 200;
-                                        await ctx.Response.Send(_Serializer.SerializeJson(vendor, true));
-                                        return;
-                                    }
-                                    else if (ctx.Request.Url.Elements[2] == "matches")
-                                    {
-                                        // get closest vendor matches by key
-                                        vendors = _Vendors.FindClosestMatches(ctx.Request.Url.Elements[3], maxResults);
-                                        ctx.Response.StatusCode = 200;
-                                        await ctx.Response.Send(_Serializer.SerializeJson(vendors, true));
-                                        return;
-                                    }
-                                }
-                                else if (ctx.Request.Url.Elements[1] == "codec")
-                                {
-                                    if (ctx.Request.Url.Elements[2] == "match")
-                                    {
-                                        // get closest CODEC match by key
-                                        codec = _Codecs.FindClosestMatch(ctx.Request.Url.Elements[3]);
-                                        ctx.Response.StatusCode = 200;
-                                        await ctx.Response.Send(_Serializer.SerializeJson(codec, true));
-                                        return;
-                                    }
-                                    else if (ctx.Request.Url.Elements[2] == "matches")
-                                    {
-                                        // get closest CODEC matches by key
-                                        codecs = _Codecs.FindClosestMatches(ctx.Request.Url.Elements[3], maxResults);
-                                        ctx.Response.StatusCode = 200;
-                                        await ctx.Response.Send(_Serializer.SerializeJson(codecs, true));
-                                        return;
-                                    }
-                                }
-                                else if (ctx.Request.Url.Elements[1] == "full")
-                                {
-                                    if (ctx.Request.Url.Elements[2] == "match")
-                                    {
-                                        string key = ctx.Request.Url.Elements[3];
-                                        if (key.Length < 36)
-                                        {
-                                            _Logging.Warn(_Header + "supplied key is 35 characters or less");
-
-                                            ctx.Response.StatusCode = 404; 
-                                            await ctx.Response.Send(_Serializer.SerializeJson(
-                                                new ApiErrorResponse()
-                                                {
-                                                    Message = Constants.BadRequestError,
-                                                    StatusCode = 404,
-                                                    Context = "Supplied key must be greater than 35 characters."
-                                                }, true));
-                                            return;
-                                        }
-
-                                        // left 35, right 35
-                                        string left = key.Substring(0, 35);
-                                        string right = key.Substring((key.Length - 35), 35);
-
-                                        ResultSet resultSet = new ResultSet
-                                        {
-                                            Key = key,
-                                            Left = left,
-                                            Right = right,
-                                            Vendor = _Vendors.FindClosestMatch(left),
-                                            Codec = _Codecs.FindClosestMatch(right)
-                                        };
-
-                                        ctx.Response.StatusCode = 200;
-                                        await ctx.Response.Send(_Serializer.SerializeJson(resultSet, true));
-                                        return;
-                                    }
-                                    else if (ctx.Request.Url.Elements[2] == "matches")
-                                    {
-                                        string key = ctx.Request.Url.Elements[3];
-                                        if (key.Length < 36)
-                                        {
-                                            _Logging.Warn(_Header + "supplied key is 35 characters or less");
-
-                                            ctx.Response.StatusCode = 404; 
-                                            await ctx.Response.Send(_Serializer.SerializeJson(
-                                                new ApiErrorResponse()
-                                                {
-                                                    Message = Constants.BadRequestError,
-                                                    StatusCode = 404,
-                                                    Context = "Supplied key must be greater than 35 characters."
-                                                }, true));
-                                            return;
-                                        }
-
-                                        // left 35, right 35
-                                        string left = key.Substring(0, 35);
-                                        string right = key.Substring((key.Length - 35), 35);
-
-                                        ResultSet resultSet = new ResultSet
-                                        {
-                                            Key = key,
-                                            Left = left,
-                                            Right = right,
-                                            Vendors = _Vendors.FindClosestMatches(left, maxResults),
-                                            Codecs = _Codecs.FindClosestMatches(right, maxResults)
-                                        };
-
-                                        ctx.Response.StatusCode = 200;
-                                        await ctx.Response.Send(_Serializer.SerializeJson(resultSet, true));
-                                        return;
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                }
-
-                ctx.Response.StatusCode = 400; 
-                await ctx.Response.Send(_Serializer.SerializeJson(
-                    new ApiErrorResponse()
-                    {
-                        Message = Constants.BadRequestError,
-                        StatusCode = 400,
-                        Context = "Unknown URL or HTTP method."
-                    }, true));
-            }
-            catch (Exception e)
-            {
-                _Logging.Exception(e);
-
-                ctx.Response.StatusCode = 500;
-                await ctx.Response.Send(_Serializer.SerializeJson(
-                    new ApiErrorResponse()
-                    {
-                        Message = Constants.InternalServerError,
-                        StatusCode = 500,
-                        Exception = e
-                    }, true));
-            }
-            finally
-            {
-                ts.End = DateTime.UtcNow;
-
-                _Logging.Debug(
-                    _Header +
-                    ctx.Request.Method.ToString() + " " +
-                    ctx.Request.Url.RawWithoutQuery + " " +
-                    ctx.Response.StatusCode + " " +
-                    ts.TotalMs + "ms");
-            }
+            if (maxResults < 1) maxResults = 1;
+            return maxResults;
         }
 
         #endregion
