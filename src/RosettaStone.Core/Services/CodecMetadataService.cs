@@ -41,8 +41,12 @@ namespace RosettaStone.Core.Services
             Expr expr = new Expr(
                 _ORM.GetColumnName<CodecMetadata>(nameof(CodecMetadata.Id)),
                 OperatorEnum.GreaterThan,
-                0
-                );
+                0);
+
+            expr.PrependAnd(
+                _ORM.GetColumnName<CodecMetadata>(nameof(CodecMetadata.IsAssigned)),
+                OperatorEnum.Equals,
+                1);
 
             return _ORM.SelectMany<CodecMetadata>(expr);
         }
@@ -56,8 +60,12 @@ namespace RosettaStone.Core.Services
             Expr expr = new Expr(
                 _ORM.GetColumnName<CodecMetadata>(nameof(CodecMetadata.VendorGUID)),
                 OperatorEnum.Equals,
-                vendorGuid
-                );
+                vendorGuid);
+
+            expr.PrependAnd(
+                _ORM.GetColumnName<CodecMetadata>(nameof(CodecMetadata.IsAssigned)),
+                OperatorEnum.Equals,
+                1);
 
             return _ORM.SelectMany<CodecMetadata>(expr);
         }
@@ -71,8 +79,12 @@ namespace RosettaStone.Core.Services
             Expr expr = new Expr(
                 _ORM.GetColumnName<CodecMetadata>(nameof(CodecMetadata.Key)),
                 OperatorEnum.Equals,
-                key
-                );
+                key);
+
+            expr.PrependAnd(
+                _ORM.GetColumnName<CodecMetadata>(nameof(CodecMetadata.IsAssigned)),
+                OperatorEnum.Equals,
+                1);
 
             return _ORM.SelectFirst<CodecMetadata>(expr);
         }
@@ -86,8 +98,12 @@ namespace RosettaStone.Core.Services
             Expr expr = new Expr(
                 _ORM.GetColumnName<CodecMetadata>(nameof(CodecMetadata.Key)),
                 OperatorEnum.Equals,
-                key
-                );
+                key);
+
+            expr.PrependAnd(
+                _ORM.GetColumnName<CodecMetadata>(nameof(CodecMetadata.IsAssigned)),
+                OperatorEnum.Equals,
+                1);
 
             return _ORM.Exists<CodecMetadata>(expr);
         }
@@ -101,8 +117,12 @@ namespace RosettaStone.Core.Services
             Expr expr = new Expr(
                 _ORM.GetColumnName<CodecMetadata>(nameof(CodecMetadata.GUID)),
                 OperatorEnum.Equals,
-                guid
-                );
+                guid);
+
+            expr.PrependAnd(
+                _ORM.GetColumnName<CodecMetadata>(nameof(CodecMetadata.IsAssigned)),
+                OperatorEnum.Equals,
+                1);
 
             return _ORM.SelectFirst<CodecMetadata>(expr);
         }
@@ -116,8 +136,12 @@ namespace RosettaStone.Core.Services
             Expr expr = new Expr(
                 _ORM.GetColumnName<CodecMetadata>(nameof(CodecMetadata.GUID)),
                 OperatorEnum.Equals,
-                guid
-                );
+                guid);
+
+            expr.PrependAnd(
+                _ORM.GetColumnName<CodecMetadata>(nameof(CodecMetadata.IsAssigned)),
+                OperatorEnum.Equals,
+                1);
 
             return _ORM.Exists<CodecMetadata>(expr);
         }
@@ -208,7 +232,7 @@ namespace RosettaStone.Core.Services
             key = key.ToUpper();
 
             List<CodecMetadata> all = All();
-            List<string> keys = all.Select(x => x.Key).ToList();
+            List<string> keys = all.Where(x => x.IsAssigned).Select(x => x.Key).ToList();
 
             (string, int) result = ClosestString.UsingLevenshtein(key, keys);
 
@@ -225,7 +249,7 @@ namespace RosettaStone.Core.Services
             key = key.ToUpper();
 
             List<CodecMetadata> all = All();
-            List<string> keys = all.Select(x => x.Key).ToList();
+            List<string> keys = all.Where(x => x.IsAssigned).Select(x => x.Key).ToList();
 
             List<(string, int)> result = ClosestStrings.UsingLevenshtein(key, keys, maxResults);
             List<CodecMetadata> ret = new List<CodecMetadata>();

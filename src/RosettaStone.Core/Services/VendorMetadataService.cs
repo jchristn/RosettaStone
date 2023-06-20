@@ -40,8 +40,12 @@ namespace RosettaStone.Core.Services
             Expr expr = new Expr(
                 _ORM.GetColumnName<VendorMetadata>(nameof(VendorMetadata.Id)),
                 OperatorEnum.GreaterThan,
-                0
-                );
+                0);
+
+            expr.PrependAnd(
+                _ORM.GetColumnName<VendorMetadata>(nameof(VendorMetadata.IsAssigned)),
+                OperatorEnum.Equals,
+                1);
 
             return _ORM.SelectMany<VendorMetadata>(expr);
         }
@@ -55,8 +59,12 @@ namespace RosettaStone.Core.Services
             Expr expr = new Expr(
                 _ORM.GetColumnName<VendorMetadata>(nameof(VendorMetadata.Key)),
                 OperatorEnum.Equals,
-                key
-                );
+                key);
+
+            expr.PrependAnd(
+                _ORM.GetColumnName<VendorMetadata>(nameof(VendorMetadata.IsAssigned)),
+                OperatorEnum.Equals,
+                1);
 
             return _ORM.SelectFirst<VendorMetadata>(expr);
         }
@@ -70,8 +78,12 @@ namespace RosettaStone.Core.Services
             Expr expr = new Expr(
                 _ORM.GetColumnName<VendorMetadata>(nameof(VendorMetadata.Key)),
                 OperatorEnum.Equals,
-                key
-                );
+                key);
+
+            expr.PrependAnd(
+                _ORM.GetColumnName<VendorMetadata>(nameof(VendorMetadata.IsAssigned)),
+                OperatorEnum.Equals,
+                1);
 
             return _ORM.Exists<VendorMetadata>(expr);
         }
@@ -85,8 +97,12 @@ namespace RosettaStone.Core.Services
             Expr expr = new Expr(
                 _ORM.GetColumnName<VendorMetadata>(nameof(VendorMetadata.GUID)),
                 OperatorEnum.Equals,
-                guid
-                );
+                guid);
+
+            expr.PrependAnd(
+                _ORM.GetColumnName<VendorMetadata>(nameof(VendorMetadata.IsAssigned)),
+                OperatorEnum.Equals,
+                1);
 
             return _ORM.SelectFirst<VendorMetadata>(expr);
         }
@@ -100,8 +116,12 @@ namespace RosettaStone.Core.Services
             Expr expr = new Expr(
                 _ORM.GetColumnName<VendorMetadata>(nameof(VendorMetadata.GUID)),
                 OperatorEnum.Equals,
-                guid
-                );
+                guid);
+
+            expr.PrependAnd(
+                _ORM.GetColumnName<VendorMetadata>(nameof(VendorMetadata.IsAssigned)),
+                OperatorEnum.Equals,
+                1);
 
             return _ORM.Exists<VendorMetadata>(expr);
         }
@@ -175,7 +195,7 @@ namespace RosettaStone.Core.Services
             key = key.ToUpper();
 
             List<VendorMetadata> all = All();
-            List<string> keys = all.Select(x => x.Key).ToList();
+            List<string> keys = all.Where(x => x.IsAssigned).Select(x => x.Key).ToList();
 
             (string, int) result = ClosestString.UsingLevenshtein(key, keys);
 
@@ -192,7 +212,7 @@ namespace RosettaStone.Core.Services
             key = key.ToUpper();
 
             List<VendorMetadata> all = All();
-            List<string> keys = all.Select(x => x.Key).ToList();
+            List<string> keys = all.Where(x => x.IsAssigned).Select(x => x.Key).ToList();
 
             List<(string, int)> result = ClosestStrings.UsingLevenshtein(key, keys, maxResults);
             List<VendorMetadata> ret = new List<VendorMetadata>();
