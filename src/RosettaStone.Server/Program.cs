@@ -240,7 +240,7 @@ namespace RosettaStone.Server
             _Server.Routes.Parameter.Add(HttpMethod.GET, "/v1.0/vendor/matches/{key}", GetVendorMatchesV1);
             _Server.Routes.Parameter.Add(HttpMethod.GET, "/v1.0/codec/matches/{key}", GetCodecMatchesV1);
             _Server.Routes.Parameter.Add(HttpMethod.GET, "/v1.0/full/match/{key}", GetFullMatchV1);
-            _Server.Routes.Parameter.Add(HttpMethod.GET, "/v1.0/full/matches/{key}", GetCodecMatchesV1);
+            _Server.Routes.Parameter.Add(HttpMethod.GET, "/v1.0/full/matches/{key}", GetFullMatchesV1);
 
             _Server.Start();
 

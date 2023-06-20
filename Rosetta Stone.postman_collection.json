@@ -7,6 +7,25 @@
 	},
 	"item": [
 		{
+			"name": "Get homepage",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get all vendors",
 			"request": {
 				"method": "GET",
@@ -216,7 +235,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{hostname}}:{{port}}/{{version}}/full/match/ACTGACTGACTGACTGACTGACTGACTGAAACTAGCTAGCTAGCTAGCTAGCTAGCTAGCCC",
+					"raw": "http://{{hostname}}:{{port}}/{{version}}/full/matches/ACTGACTGACTGACTGACTGACTGACTGAAACTAGCTAGCTAGCTAGCTAGCTAGCTAGCCC",
 					"protocol": "http",
 					"host": [
 						"{{hostname}}"
@@ -225,7 +244,7 @@
 					"path": [
 						"{{version}}",
 						"full",
-						"match",
+						"matches",
 						"ACTGACTGACTGACTGACTGACTGACTGAAACTAGCTAGCTAGCTAGCTAGCTAGCTAGCCC"
 					]
 				}
@@ -256,7 +275,7 @@
 	"variable": [
 		{
 			"key": "hostname",
-			"value": "localhost",
+			"value": "ec2-54-193-29-139.us-west-1.compute.amazonaws.com",
 			"type": "string"
 		},
 		{
@@ -266,7 +285,7 @@
 		},
 		{
 			"key": "port",
-			"value": "8000",
+			"value": "80",
 			"type": "string"
 		}
 	]
