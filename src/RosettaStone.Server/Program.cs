@@ -15,6 +15,8 @@ namespace RosettaStone.Server
 {
     public static class Program
     {
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+
         #region Public-Members
 
         #endregion
@@ -228,6 +230,8 @@ namespace RosettaStone.Server
                 _Settings.Webserver.Ssl,
                 DefaultRoute);
 
+            _Server.Routes.PostRouting = PostRouting;
+
             _Server.Routes.Static.Add(HttpMethod.GET, "/", GetRootRoute);
             _Server.Routes.Static.Add(HttpMethod.GET, "/favicon.ico", GetFaviconRoute);
             _Server.Routes.Static.Add(HttpMethod.GET, "/v1.0/vendor", GetAllVendorsV1);
@@ -250,6 +254,19 @@ namespace RosettaStone.Server
                 _Settings.Webserver.Port);
 
             #endregion
+        }
+
+        private static async Task PostRouting(HttpContext ctx)
+        {
+            ctx.Timestamp.End = DateTime.UtcNow;
+
+            _Logging.Debug(
+                _Header
+                + ctx.Request.Source.IpAddress + ":" + ctx.Request.Source.Port + " "
+                + ctx.Request.Method.ToString() + " "
+                + ctx.Request.Url.RawWithQuery + ": "
+                + ctx.Response.StatusCode + " "
+                + "(" + ctx.Timestamp.TotalMs + "ms)");
         }
 
         private static void RunConsoleWorker()
@@ -489,5 +506,7 @@ namespace RosettaStone.Server
         }
 
         #endregion
+
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     }
 }
