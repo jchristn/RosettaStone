@@ -12,8 +12,8 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{hostname}}:{{port}}/",
-					"protocol": "http",
+					"raw": "https://{{hostname}}:{{port}}/",
+					"protocol": "https",
 					"host": [
 						"{{hostname}}"
 					],
@@ -31,8 +31,8 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{hostname}}:{{port}}/{{version}}/vendor",
-					"protocol": "http",
+					"raw": "https://{{hostname}}:{{port}}/{{version}}/vendor",
+					"protocol": "https",
 					"host": [
 						"{{hostname}}"
 					],
@@ -51,8 +51,8 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{hostname}}:{{port}}/{{version}}/vendor/ACTGACTGACTGACTGACTGACTGACTGAC",
-					"protocol": "http",
+					"raw": "https://{{hostname}}:{{port}}/{{version}}/vendor/ACTGACTGACTGACTGACTGACTGACTGAC",
+					"protocol": "https",
 					"host": [
 						"{{hostname}}"
 					],
@@ -72,8 +72,8 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{hostname}}:{{port}}/{{version}}/vendor/match/ACTGACTGACTGACTGACTGACTGACTGTG",
-					"protocol": "http",
+					"raw": "https://{{hostname}}:{{port}}/{{version}}/vendor/match/ACTGACTGACTGACTGACTGACTGACTGTG",
+					"protocol": "https",
 					"host": [
 						"{{hostname}}"
 					],
@@ -94,8 +94,8 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{hostname}}:{{port}}/{{version}}/vendor/matches/ACTGACTGACTGACTGACTGACTGACTGTG?results=2",
-					"protocol": "http",
+					"raw": "https://{{hostname}}:{{port}}/{{version}}/vendor/matches/ACTGACTGACTGACTGACTGACTGACTGTG?results=2",
+					"protocol": "https",
 					"host": [
 						"{{hostname}}"
 					],
@@ -122,8 +122,8 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{hostname}}:{{port}}/{{version}}/codec",
-					"protocol": "http",
+					"raw": "https://{{hostname}}:{{port}}/{{version}}/codec",
+					"protocol": "https",
 					"host": [
 						"{{hostname}}"
 					],
@@ -142,8 +142,8 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{hostname}}:{{port}}/{{version}}/codec/CAGTCAGTCAGTCAGTCAGTCAGTCAGTAC",
-					"protocol": "http",
+					"raw": "https://{{hostname}}:{{port}}/{{version}}/codec/CAGTCAGTCAGTCAGTCAGTCAGTCAGTAC",
+					"protocol": "https",
 					"host": [
 						"{{hostname}}"
 					],
@@ -163,8 +163,8 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{hostname}}:{{port}}/{{version}}/codec/match/tagctagctagctagctagctagctagcta",
-					"protocol": "http",
+					"raw": "https://{{hostname}}:{{port}}/{{version}}/codec/match/tagctagctagctagctagctagctagcta",
+					"protocol": "https",
 					"host": [
 						"{{hostname}}"
 					],
@@ -185,8 +185,8 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{hostname}}:{{port}}/{{version}}/codec/matches/tagctagctagctagctagctagctagcta?results=2",
-					"protocol": "http",
+					"raw": "https://{{hostname}}:{{port}}/{{version}}/codec/matches/tagctagctagctagctagctagctagcta?results=2",
+					"protocol": "https",
 					"host": [
 						"{{hostname}}"
 					],
@@ -213,8 +213,8 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{hostname}}:{{port}}/{{version}}/full/match/ACTGACTGACTGACTGACTGACTGACTGAAACTAGCTAGCTAGCTAGCTAGCTAGCTAGCCC",
-					"protocol": "http",
+					"raw": "https://{{hostname}}:{{port}}/{{version}}/full/match/ACTGACTGACTGACTGACTGACTGACTGAAACTAGCTAGCTAGCTAGCTAGCTAGCTAGCCC",
+					"protocol": "https",
 					"host": [
 						"{{hostname}}"
 					],
@@ -235,8 +235,8 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{hostname}}:{{port}}/{{version}}/full/matches/ACTGACTGACTGACTGACTGACTGACTGAAACTAGCTAGCTAGCTAGCTAGCTAGCTAGCCC",
-					"protocol": "http",
+					"raw": "https://{{hostname}}:{{port}}/{{version}}/full/matches/ACTGACTGACTGACTGACTGACTGACTGAAACTAGCTAGCTAGCTAGCTAGCTAGCTAGCCC",
+					"protocol": "https",
 					"host": [
 						"{{hostname}}"
 					],
@@ -275,7 +275,7 @@
 	"variable": [
 		{
 			"key": "hostname",
-			"value": "ec2-54-193-29-139.us-west-1.compute.amazonaws.com",
+			"value": "rosettastone.dnadatastoragealliance.org",
 			"type": "string"
 		},
 		{
@@ -285,7 +285,7 @@
 		},
 		{
 			"key": "port",
-			"value": "80",
+			"value": "443",
 			"type": "string"
 		}
 	]
