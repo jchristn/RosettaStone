@@ -230,6 +230,7 @@ namespace RosettaStone.Server
                 _Settings.Webserver.Ssl,
                 DefaultRoute);
 
+            _Server.Routes.PreRouting = PreRouting;
             _Server.Routes.PostRouting = PostRouting;
 
             _Server.Routes.Static.Add(HttpMethod.GET, "/", GetRootRoute);
@@ -254,19 +255,6 @@ namespace RosettaStone.Server
                 _Settings.Webserver.Port);
 
             #endregion
-        }
-
-        private static async Task PostRouting(HttpContext ctx)
-        {
-            ctx.Timestamp.End = DateTime.UtcNow;
-
-            _Logging.Debug(
-                _Header
-                + ctx.Request.Source.IpAddress + ":" + ctx.Request.Source.Port + " "
-                + ctx.Request.Method.ToString() + " "
-                + ctx.Request.Url.RawWithQuery + ": "
-                + ctx.Response.StatusCode + " "
-                + "(" + ctx.Timestamp.TotalMs + "ms)");
         }
 
         private static void RunConsoleWorker()
@@ -296,6 +284,25 @@ namespace RosettaStone.Server
                         break;
                 }
             }
+        }
+
+        private static async Task<bool> PreRouting(HttpContext ctx)
+        {
+            ctx.Response.ContentType = Constants.JsonContentType;
+            return false;
+        }
+
+        private static async Task PostRouting(HttpContext ctx)
+        {
+            ctx.Timestamp.End = DateTime.UtcNow;
+
+            _Logging.Debug(
+                _Header
+                + ctx.Request.Source.IpAddress + ":" + ctx.Request.Source.Port + " "
+                + ctx.Request.Method.ToString() + " "
+                + ctx.Request.Url.RawWithQuery + ": "
+                + ctx.Response.StatusCode + " "
+                + "(" + ctx.Timestamp.TotalMs + "ms)");
         }
 
         private static async Task DefaultRoute(HttpContext ctx)
