@@ -121,6 +121,14 @@ namespace RosettaStone.Server
                 && !Directory.Exists(_Settings.Logging.LogDirectory))
             {
                 Directory.CreateDirectory(_Settings.Logging.LogDirectory);
+            }
+
+            if (!String.IsNullOrEmpty(_Settings.Logging.LogDirectory)
+                && !String.IsNullOrEmpty(_Settings.Logging.LogFilename))
+            {
+                _Settings.Logging.LogDirectory = _Settings.Logging.LogDirectory.Replace("\\", "/");
+                if (!_Settings.Logging.LogDirectory.EndsWith("/")) _Settings.Logging.LogDirectory += "/";
+
                 _Settings.Logging.LogFilename = _Settings.Logging.LogDirectory + _Settings.Logging.LogFilename;
             }
 
@@ -129,6 +137,8 @@ namespace RosettaStone.Server
                 _Logging.Settings.FileLogging = FileLoggingMode.FileWithDate;
                 _Logging.Settings.LogFilename = _Settings.Logging.LogFilename;
             }
+
+            Console.WriteLine("Logging to file " + _Settings.Logging.LogFilename);
 
             #endregion
 
